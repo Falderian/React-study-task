@@ -5,18 +5,18 @@ import { Layout } from './layout/layout';
 import { PageMain } from './main/main';
 import { PageNotFound } from './pageNotFound/pageNotFound';
 
-function App() {
+const App = () => {
   return (
     <div>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<PageMain />} />
+          <Route path="/home" element={<PageMain />} />
           <Route path="about" element={<PageAbout />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>
     </div>
   );
-}
+};
 
 export default App;
