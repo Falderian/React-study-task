@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+import './layout.scss';
 
 export const Layout = () => {
   return (
@@ -16,7 +17,17 @@ export const Layout = () => {
         <Outlet />
       </main>
 
-      <footer>Footer</footer>
+      <footer className="footer">
+        <a href="https://rs.school/" target="_blank" rel="noreferrer" className="rs-link">
+          <img className="footer__logo" src="https://rs.school/images/rs_school.svg"></img>
+        </a>
+        <a href="https://github.com/Falderian" target="_blank" rel="noreferrer">
+          <img
+            className="footer__github"
+            src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+          ></img>
+        </a>
+      </footer>
     </div>
   );
 };

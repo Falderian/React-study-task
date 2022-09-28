@@ -4,15 +4,14 @@
   justify-content: space-between;
   align-items: center;
   align-content: center;
-
   background-color: whitesmoke;
   border-radius: 20em;
+}
 
-  .footer__logo {
-    height: 2em;
-  }
+.footer .footer__logo {
+  height: 2em;
+}
 
-  .footer__github {
-    height: 2em;
-  }
+.footer .footer__github {
+  height: 2em;
 }
