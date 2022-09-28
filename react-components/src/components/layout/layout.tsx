@@ -5,7 +5,7 @@ export const Layout = () => {
   return (
     <div className="wrapper">
       <header className="header">
-        <NavLink className="header__link" to="/home">
+        <NavLink className="header__link" to="/">
           Home
         </NavLink>
         <NavLink className="header__link" to="/about">

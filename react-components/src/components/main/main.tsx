@@ -1,4 +1,7 @@
+import { data } from 'data/data';
+import { IPhones } from 'interfaces/phone';
 import React from 'react';
+import { Card } from './cards';
 
 export const PageMain = () => {
   return (
@@ -20,7 +23,14 @@ export const PageMain = () => {
           </svg>
         </button>
       </div>
-      <div className="cards-cont"></div>
+      <div className="cards-cont">{Cards(data)}</div>
     </div>
   );
+};
+
+const Cards = (data: IPhones) => {
+  const res = data.map((el) => {
+    return Card(el);
+  });
+  return res;
 };

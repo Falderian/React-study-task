@@ -4,13 +4,14 @@ import { PageAbout } from './about/about';
 import { Layout } from './layout/layout';
 import { PageMain } from './main/main';
 import { PageNotFound } from './pageNotFound/pageNotFound';
+import '../data/data';
 
 const App = () => {
   return (
     <div>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route path="/home" element={<PageMain />} />
+          <Route index element={<PageMain />} />
           <Route path="about" element={<PageAbout />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
