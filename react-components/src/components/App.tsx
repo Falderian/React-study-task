@@ -4,7 +4,6 @@ import { PageAbout } from './about/about';
 import { Layout } from './layout/layout';
 import { PageMain } from './main/main';
 import { PageNotFound } from './pageNotFound/pageNotFound';
-import '../data/data';
 
 const App = () => {
   return (
