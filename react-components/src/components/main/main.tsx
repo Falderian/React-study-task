@@ -4,7 +4,11 @@ import React, { Component } from 'react';
 import { Card } from './cards';
 
 export class PageMain extends Component {
-  inputData = '';
+  inputData: string;
+  constructor(data: string) {
+    super(data);
+    this.inputData = data;
+  }
   componentDidMount() {
     this.inputData = localStorage.getItem('inputData') || '';
     (document.getElementById('input') as HTMLInputElement).value = this.inputData;
