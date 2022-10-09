@@ -1,5 +1,6 @@
 @import url("./reset.min.css");
 @import url("./components/main/cards.scss");
+@import url("./components/forms/forms.scss");
 .body {
   background-color: whitesmoke;
   padding: 3em;

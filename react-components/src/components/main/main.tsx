@@ -1,4 +1,4 @@
-import { data } from 'data/data';
+import { data } from 'helpers/data';
 import { IPhones } from 'interfaces/phone';
 import React, { Component } from 'react';
 import { Card } from './cards';

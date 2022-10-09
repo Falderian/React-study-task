@@ -1,5 +1,5 @@
 export interface IPhone {
-  num: string;
+  num?: string;
   name: string;
   quantity: string;
   year: string;

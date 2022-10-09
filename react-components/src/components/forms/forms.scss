@@ -1,0 +1,38 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: white;
+  padding: 10px;
+  border: 1px solid #ffffff;
+  border-radius: 10px;
+
+  .form__label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    gap: 5px;
+  }
+}
+
+.cards {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  color: black;
+  padding: 10px;
+  border: 1px solid #ffffff;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 20px;
+  .card{
+    
+  border: 1px solid #ffffff;
+  border-radius: 10px;
+    width: 30%;
+    .card__image {
+      width: 100%;
+    }
+  }
+}
