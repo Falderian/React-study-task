@@ -14,11 +14,21 @@
     align-content: center;
     gap: 5px;
   }
+  .form__submit-btn {
+    width: 40%;
+  }
+  .form__reset-btn {
+    width: 40%;
+  }
+
+  .inactive {
+    opacity: 0%;
+  }
 }
 
 .cards {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 10px;
   color: black;
   padding: 10px;
@@ -26,13 +36,26 @@
   border-radius: 10px;
   text-align: center;
   margin-top: 20px;
-  .card{
-    
-  border: 1px solid #ffffff;
-  border-radius: 10px;
-    width: 30%;
-    .card__image {
-      width: 100%;
+  .cards__cont {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    align-content: center;
+    .card {
+      display: flex;
+      border: 3px double lightgreen;
+      border-radius: 10px;
+      width: 25vw;
+      flex-direction: column;
+      justify-content: center;
+      align-content: center;
+      align-items: center;
+      .card__image {
+        width: 100%;
+      }      
     }
   }
 }
