@@ -72,6 +72,7 @@ export class PageForms extends React.Component {
             Имя:
             <input
               type="text"
+              id="nameInput"
               required
               ref={this.nameInput}
               onChange={() => this.disableSubmitBtn()}
@@ -79,11 +80,11 @@ export class PageForms extends React.Component {
           </label>
           <label className="form__label">
             Дата отправки:
-            <input type="date" required ref={this.dateSendInput} />
+            <input type="date" id="dateInput" required ref={this.dateSendInput} />
           </label>
           <label className="form__label">
             Выберите тип посылки:
-            <select required ref={this.optionDeliveryInput}>
+            <select required ref={this.optionDeliveryInput} id="optionDeliveryInput">
               <option>До 10 кг</option>
               <option>Более 10 кг</option>
             </select>
@@ -101,7 +102,12 @@ export class PageForms extends React.Component {
           </label>
           <label className="form__label">
             Доставка курьером:
-            <input type="checkbox" defaultChecked={false} ref={this.courierInput} />
+            <input
+              type="checkbox"
+              id="courierInput"
+              defaultChecked={false}
+              ref={this.courierInput}
+            />
           </label>
           <input
             className="form__submit-btn"

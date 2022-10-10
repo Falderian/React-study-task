@@ -15,5 +15,4 @@ export const saveItemToStorage = (arr: string[], checked: boolean) => {
   };
   imageStorage = [];
   storage.push(deliveryPackage);
-  console.log(storage);
 };
