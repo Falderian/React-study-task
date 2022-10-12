@@ -86,6 +86,11 @@ $small-spinner-dimensions: $main-spinner-dimensions * 0.7; //width and height of
   align-items: center;
   align-content: center;
   flex-wrap: nowrap;
+  gap: 5px;
+
+  border: 0.7px solid white;
+  border-radius: 5px;
+  padding: 5px;
 
   .search-form__label {
     display: flex;
@@ -95,29 +100,31 @@ $small-spinner-dimensions: $main-spinner-dimensions * 0.7; //width and height of
     flex-direction: row;
     gap: 10px;
   }
+  .search-form__desc-checkbox {
+    display: flex;
+  }
 }
 
 .search__cards {
   display: flex;
   width: 100%;
-  flex-wrap: wrap;
   gap: 10px;
-  justify-content: space-evenly;
-  align-items: center;
   align-content: center;
   flex-direction: row;
+  align-items: stretch;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
   .card {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    align-content: center;
-    justify-content: center;
-    width: 23%;
-
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    justify-content: flex-start;
+    width: 30%;
+    padding: 5px;
     transition: 0.3s;
     border-radius: 5px;
     border: 0.5px white solid;
+    align-content: stretch;
     .card__img-cont {
       img {
         width: 100%;
@@ -128,7 +135,17 @@ $small-spinner-dimensions: $main-spinner-dimensions * 0.7; //width and height of
       display: flex;
       justify-content: space-between;
       width: 100%;
-      position: absolute;
+      .card__vote-average {
+        display: flex;
+        background-color: wheat;
+        width: 25px;
+        height: 25px;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: nowrap;
+        border-radius: 0px 0px 5px 0px;
+        margin: 0 -5px -5px 0;
+      }
     }
   }
 }
