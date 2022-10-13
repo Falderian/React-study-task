@@ -1,6 +1,6 @@
 import { baseApi } from 'api/API';
 import axios from 'axios';
-import { returnGenresString } from 'helpers/modalHelpers';
+import { returnGenresString, YoutubeEmbed } from 'helpers/modalHelpers';
 import { ISearchCards } from 'interfaces/searchCard';
 import React, { RefObject } from 'react';
 import { Component } from 'react';
@@ -56,6 +56,7 @@ export class PageSearch extends Component {
       vote_average: 6.6,
       vote_count: 246,
     },
+    trailerKey: '',
   };
 
   searchInput: RefObject<HTMLInputElement>;
@@ -73,6 +74,7 @@ export class PageSearch extends Component {
       const url = this.apiSearch + `=${query}`;
       const data = await baseApi(url);
       this.setState({ data: data.results, isLoaded: true });
+      console.log(this.state.trailerKey);
     } catch (error) {
       console.log(error);
     }
@@ -80,9 +82,23 @@ export class PageSearch extends Component {
 
   async getMovieInfo(id: string) {
     try {
-      const url = `https://api.themoviedb.org/3/movie/${id}?api_key=0e655211503a99e2b6a8909e76f606a6`;
+      const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${this.apiKey}`;
       const data = await axios.get(url);
       this.setState({ movieData: data.data });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getMovieTrailer(id: string) {
+    try {
+      const url = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${this.apiKey}&language=en-US`;
+      const data = await axios.get(url);
+      const videoUrl = data.data.results.find((el: { key: string; type: string | string[] }) => {
+        el.type.includes('Trailer');
+        return el.key;
+      });
+      this.setState({ trailerKey: videoUrl.key });
     } catch (error) {
       console.log(error);
     }
@@ -119,19 +135,22 @@ export class PageSearch extends Component {
                 <div className="modal__movie-status">Status: {this.state.movieData.status}</div>
                 <div className="modal__runtime">Runtime: {this.state.movieData.runtime} mins</div>
                 <div className="card_popularity">Popularity: {this.state.movieData.popularity}</div>
-                <div className="card__votes">
-                  <div className="card__vote-count">
-                    Vote count: {this.state.movieData.vote_count}
-                  </div>
-                  <div className="card__vote-average">
-                    Vote average: {this.state.movieData.vote_average}
-                  </div>
+                <div className="card__vote-count">
+                  Vote count: {this.state.movieData.vote_count}
                 </div>
-                <div className="modal__movie-description">{this.state.movieData.overview}</div>
+                <div className="card__vote-average">
+                  Vote average: {this.state.movieData.vote_average}
+                </div>
+                <div className="modal__movie-description">
+                  Description: {this.state.movieData.overview}
+                </div>
               </div>
               <div className="modal__close">
                 <button className="modal__close-btn">X</button>
               </div>
+            </div>
+            <div className="modal__trailer">
+              <YoutubeEmbed embedId={this.state.trailerKey} />
             </div>
           </div>
         )}
@@ -176,6 +195,7 @@ export class PageSearch extends Component {
                           isModal: true,
                         });
                         this.getMovieInfo((evt.target as HTMLButtonElement).id);
+                        this.getMovieTrailer((evt.target as HTMLButtonElement).id);
                       }}
                     >
                       View more
