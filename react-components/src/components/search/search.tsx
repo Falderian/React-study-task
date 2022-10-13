@@ -15,11 +15,14 @@ export class PageSearch extends Component {
     isLoaded: false,
     isModal: false,
     modalDataId: '',
+    trailerKey: '',
+    bodyOverflow: true,
     movieData: {
       adult: false,
       backdrop_path: '/ghsPsvM0sEztdNT4kUlTsBF2LEF.jpg',
       belongs_to_collection: null,
       budget: 0,
+
       genres: [
         {
           id: 18,
@@ -56,7 +59,6 @@ export class PageSearch extends Component {
       vote_average: 6.6,
       vote_count: 246,
     },
-    trailerKey: '',
   };
 
   searchInput: RefObject<HTMLInputElement>;
@@ -116,41 +118,58 @@ export class PageSearch extends Component {
   render() {
     const { isLoaded } = this.state;
     const data: ISearchCards = this.state.data;
+    const body = document.querySelector('body') || null;
+    if (!this.state.bodyOverflow) {
+      body!.classList.add('disableOverflow');
+    } else {
+      body!.classList.remove('disableOverflow');
+    }
     return (
       <div className="search__wrapper">
         {!this.state.isModal ? (
           ''
         ) : (
           <div className="modal">
-            <div className="modal__content">
-              <img src={this.apiImg + '/' + this.state.movieData.poster_path}></img>
-              <div className="modal__description">
-                <h4 className="card__title">Title: {this.state.movieData.title}</h4>
-                <div className="card__release-date">
-                  Release date: {this.state.movieData.release_date}
+            <div className="overlay">
+              <div className="modal__content">
+                <img src={this.apiImg + '/' + this.state.movieData.poster_path}></img>
+                <div className="modal__description">
+                  <h4 className="card__title">Title: {this.state.movieData.title}</h4>
+                  <div className="card__release-date">
+                    Release date: {this.state.movieData.release_date}
+                  </div>
+                  <div className="modal__genres">
+                    Genres: {returnGenresString(this.state.movieData.genres)}
+                  </div>
+                  <div className="modal__movie-status">Status: {this.state.movieData.status}</div>
+                  <div className="modal__runtime">Runtime: {this.state.movieData.runtime} mins</div>
+                  <div className="card_popularity">
+                    Popularity: {this.state.movieData.popularity}
+                  </div>
+                  <div className="card__vote-count">
+                    Vote count: {this.state.movieData.vote_count}
+                  </div>
+                  <div className="card__vote-average">
+                    Vote average: {this.state.movieData.vote_average}
+                  </div>
+                  <div className="modal__movie-description">
+                    Description: {this.state.movieData.overview}
+                  </div>
                 </div>
-                <div className="modal__genres">
-                  Genres: {returnGenresString(this.state.movieData.genres)}
-                </div>
-                <div className="modal__movie-status">Status: {this.state.movieData.status}</div>
-                <div className="modal__runtime">Runtime: {this.state.movieData.runtime} mins</div>
-                <div className="card_popularity">Popularity: {this.state.movieData.popularity}</div>
-                <div className="card__vote-count">
-                  Vote count: {this.state.movieData.vote_count}
-                </div>
-                <div className="card__vote-average">
-                  Vote average: {this.state.movieData.vote_average}
-                </div>
-                <div className="modal__movie-description">
-                  Description: {this.state.movieData.overview}
+                <div className="modal__close">
+                  <button
+                    className="modal__close-btn"
+                    onClick={() => {
+                      this.setState({ isModal: false, bodyOverflow: true });
+                    }}
+                  >
+                    X
+                  </button>
                 </div>
               </div>
-              <div className="modal__close">
-                <button className="modal__close-btn">X</button>
+              <div className="modal__trailer">
+                <YoutubeEmbed embedId={this.state.trailerKey} />
               </div>
-            </div>
-            <div className="modal__trailer">
-              <YoutubeEmbed embedId={this.state.trailerKey} />
             </div>
           </div>
         )}
@@ -196,6 +215,7 @@ export class PageSearch extends Component {
                         });
                         this.getMovieInfo((evt.target as HTMLButtonElement).id);
                         this.getMovieTrailer((evt.target as HTMLButtonElement).id);
+                        this.setState({ bodyOverflow: false });
                       }}
                     >
                       View more
