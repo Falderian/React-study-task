@@ -68,6 +68,16 @@ export class PageSearch extends Component {
     this.searchInput = React.createRef();
   }
 
+  async baseApi(url: string) {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
     const query = this.searchInput.current!.value;
@@ -76,7 +86,6 @@ export class PageSearch extends Component {
       const url = this.apiSearch + `=${query}`;
       const data = await baseApi(url);
       this.setState({ data: data.results, isLoaded: true });
-      console.log(this.state.trailerKey);
     } catch (error) {
       console.log(error);
     }
@@ -108,7 +117,7 @@ export class PageSearch extends Component {
 
   async componentDidMount() {
     try {
-      const data = await baseApi(this.apiUrl);
+      const data = await this.baseApi(this.apiUrl);
       this.setState({ data: data.results, isLoaded: true });
     } catch (error) {
       console.log(error);
@@ -174,7 +183,11 @@ export class PageSearch extends Component {
           </div>
         )}
         <div className="search">
-          <form className="search-form" onSubmit={(e) => this.handleSubmit(e)}>
+          <form
+            data-testid="form-id"
+            className="search-form"
+            onSubmit={(e) => this.handleSubmit(e)}
+          >
             <label htmlFor="search-form-input" className="search-form__label">
               Enter data request:
               <input
@@ -183,9 +196,15 @@ export class PageSearch extends Component {
                 type="text"
                 id="search-form-input"
                 ref={this.searchInput}
+                placeholder="Type here"
               ></input>
             </label>
-            <button className="search-form_submit-btn" type="submit" id="submit-btn">
+            <button
+              data-destid="submit-btn"
+              className="search-form_submit-btn"
+              type="submit"
+              id="submit-btn"
+            >
               Send
             </button>
           </form>
@@ -201,7 +220,7 @@ export class PageSearch extends Component {
             ) : (
               data.map((el) => {
                 return (
-                  <div key={el.id} className="card">
+                  <div key={el.id} className="card" data-testid="card">
                     <div className="card__img-cont">
                       <img src={this.apiImg + '/' + el.poster_path}></img>
                     </div>
