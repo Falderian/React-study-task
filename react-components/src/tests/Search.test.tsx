@@ -12,7 +12,9 @@ describe('Search Page tests', () => {
   afterAll(() => server.close());
 
   it('Render page with api mock', async () => {
-    const mockApi = jest.spyOn(PageSearch.prototype, 'baseApi').mockReturnValue(jackReacher);
+    const mockApi = jest
+      .spyOn(PageSearch.prototype, 'baseApi')
+      .mockImplementation(() => Promise.resolve(jackReacher));
     await act(async () => {
       const { container } = render(<PageSearch />);
     });
