@@ -30,7 +30,6 @@ export class PageForms extends React.Component {
   imageChangeHandler(event: ChangeEvent<HTMLInputElement>) {
     const { files } = event.target;
     const src = window.URL.createObjectURL(files![0]);
-    console.log(src);
     imageStorage.push(src);
   }
 
@@ -156,7 +155,7 @@ export class PageForms extends React.Component {
 }
 
 export const PageFormsOnHooks = () => {
-  const { register, handleSubmit } = useForm<formData>();
+  const { register, handleSubmit, reset } = useForm<formData>();
 
   const [imgSrc, setImgSrc] = useState('');
   const [items, setItems] = useState<IItemToRender[]>([]);
@@ -170,6 +169,9 @@ export const PageFormsOnHooks = () => {
       imgSrc: imgSrc,
     };
     setItems((items) => [...items, temp]);
+    disableSubmitBtn(true);
+    disableForm(true);
+    showMsgDataSaved();
   };
 
   const imageChangeHandler = (event: FormEvent<HTMLInputElement>) => {
@@ -178,39 +180,58 @@ export const PageFormsOnHooks = () => {
     setImgSrc(src);
   };
 
-  const resetInputsValues = () => {
-    console.log('reset');
+  const showMsgDataSaved = () => {
+    const confirmDiv = document.getElementById('confirm-div') as HTMLDivElement;
+    confirmDiv.classList.toggle('inactive');
   };
 
-  const disableSubmitBtn = (evt: ChangeEvent<HTMLInputElement>) => {
-    !evt.currentTarget.value
-      ? ((document.getElementById('submit-btn') as HTMLInputElement).disabled = true)
-      : ((document.getElementById('submit-btn') as HTMLInputElement).disabled = false);
+  const resetInputsValues = (evt: React.MouseEvent<HTMLButtonElement>) => {
+    evt.preventDefault();
+    disableForm(false);
+    reset();
+    showMsgDataSaved();
+  };
+
+  const disableSubmitBtn = (cond: boolean) => {
+    (document.getElementById('submit-btn') as HTMLInputElement).disabled = cond;
   };
 
   return (
     <>
-      <form className="form" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="form"
+        onSubmit={handleSubmit(onSubmit)}
+        onChange={() => disableSubmitBtn(false)}
+      >
         Внесите данные:
         <label className="form__label">
           Имя:
           <input
+            data-testid="name-input"
             type="text"
             id="nameInput"
             required
             {...register('name')}
-            onChange={(evt) => {
-              disableSubmitBtn(evt);
-            }}
           />
         </label>
         <label className="form__label">
           Дата отправки:
-          <input type="date" id="dateInput" required {...register('date')} />
+          <input
+            data-testid="date-input"
+            type="date"
+            id="dateInput"
+            required
+            {...register('date')}
+          />
         </label>
         <label className="form__label">
           Выберите тип посылки:
-          <select required id="optionDeliveryInput" {...register('select')}>
+          <select
+            data-testid="select-input"
+            required
+            id="optionDeliveryInput"
+            {...register('select')}
+          >
             <option>До 10 кг</option>
             <option>Более 10 кг</option>
           </select>
@@ -218,6 +239,7 @@ export const PageFormsOnHooks = () => {
         <label className="form__label">
           Фото посылки:
           <input
+            data-testid="file-input"
             id="file-input"
             type="file"
             required
@@ -230,6 +252,7 @@ export const PageFormsOnHooks = () => {
         <label className="form__label">
           Доставка курьером:
           <input
+            data-testid="courier-input"
             type="checkbox"
             id="courierInput"
             defaultChecked={false}
@@ -237,6 +260,7 @@ export const PageFormsOnHooks = () => {
           />
         </label>
         <input
+          data-testid="submit-btn"
           className="form__submit-btn"
           id="submit-btn"
           disabled
@@ -244,22 +268,21 @@ export const PageFormsOnHooks = () => {
           value="Отправить"
         />
         <button
+          data-testid="reset-btn"
           className="form__reset-btn"
           onClick={(evt) => {
-            evt.preventDefault();
-            disableForm(false);
-            resetInputsValues();
+            resetInputsValues(evt);
           }}
         >
           Сбросить данные
         </button>
-        <div className="form__confirm-div inactive" id="confirm-div">
+        <div className="form__confirm-div inactive" id="confirm-div" data-testid="data-saved-text">
           Данные сохранены!
         </div>
       </form>
       <div id="cards" className="cards">
         <h4 className="card__heading">Список посылок: </h4>
-        <div className="cards__cont">
+        <div className="cards__cont" data-testid="cards">
           {items.map((el) => {
             return (
               <DeliveryCard

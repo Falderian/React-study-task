@@ -13,10 +13,9 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<PageMainOnHooks />} />
-          <Route path="forms" element={<PageForms />} />
+          <Route path="forms" element={<PageFormsOnHooks />} />
           <Route path="search" element={<PageSearch />} />
           <Route path="about" element={<PageAbout />} />
-          <Route path="formOnHooks" element={<PageFormsOnHooks />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>

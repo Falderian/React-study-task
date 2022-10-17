@@ -15,15 +15,14 @@ describe('Main Page', () => {
     const listItems = container.getElementsByClassName('card');
     expect(listItems.length).toBe(9);
   });
-});
+  test('About us page', () => {
+    const page = render(<PageAbout />);
+    expect(page.getByText(/2022/i)).toBeInTheDocument();
+  });
 
-test('About us page', () => {
-  const page = render(<PageAbout />);
-  expect(page.getByText(/2022/i)).toBeInTheDocument();
-});
-
-test('Test for localStorage mock', () => {
-  localStorage.setItem('inputDataHooks', 'aloha');
-  const page = render(<PageMainOnHooks />);
-  expect(page.findByText('aloha'));
+  test('Test for localStorage mock', () => {
+    localStorage.setItem('inputDataHooks', 'aloha');
+    const page = render(<PageMainOnHooks />);
+    expect(page.findByText('aloha'));
+  });
 });

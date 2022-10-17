@@ -16,7 +16,7 @@ describe('Search Page tests', () => {
       .spyOn(PageSearch.prototype, 'baseApi')
       .mockImplementation(() => Promise.resolve(jackReacher));
     await act(async () => {
-      const { container } = render(<PageSearch />);
+      render(<PageSearch />);
     });
     expect(mockApi).toHaveBeenCalledTimes(1);
     const cardsButtons = screen.getAllByTestId('card');

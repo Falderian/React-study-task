@@ -1,9 +1,10 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import 'mock-local-storage';
 import React from 'react';
-import { PageForms } from 'components/forms/pageForms';
+import { PageForms, PageFormsOnHooks } from 'components/forms/pageForms';
 import userEvent from '@testing-library/user-event';
+import { act } from 'react-dom/test-utils';
 
 describe('Forms Page', () => {
   it('Renders Page with form, check for conrols', () => {
@@ -56,6 +57,67 @@ describe('Forms Page', () => {
     expect(screen.getByText('Данные сохранены!'));
 
     const card = container.querySelector('.card') as HTMLDivElement;
+    expect(screen.getByText('TestName'));
+    expect((card.querySelector('.card__date') as HTMLDivElement).innerHTML.includes(currentDate));
+    expect((card.querySelector('.card__type') as HTMLDivElement).innerHTML.includes('Более 10 кг'));
+    expect(
+      (card.querySelector('.card__courier') as HTMLDivElement).innerHTML.includes('Более 10 кг')
+    );
+  });
+});
+
+describe('Form Page On Hooks', () => {
+  it('Renders Page with form, check for conrols', () => {
+    render(<PageFormsOnHooks />);
+    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    expect(screen.getByRole('combobox')).toBeInTheDocument();
+    expect(screen.getAllByRole('option')).toHaveLength(2);
+    expect(screen.getByRole('checkbox')).toBeInTheDocument();
+    expect(screen.getAllByRole('button')).toHaveLength(2);
+  });
+
+  it('Does the submit button is disabled before & after typing', () => {
+    render(<PageFormsOnHooks />);
+    expect(screen.getByText(/Отправить/i)).toBeDisabled();
+    const input = screen.getByLabelText('Имя:');
+    fireEvent.change(input, { target: { value: 'TestName' } });
+    expect(screen.getByText(/Отправить/i)).not.toBeDisabled();
+  });
+  it('Tests the card creating functions', async () => {
+    await waitFor(() => render(<PageFormsOnHooks />));
+
+    //name input tests
+    const nameInput = screen.getByLabelText('Имя:') as HTMLInputElement;
+    fireEvent.change(nameInput, { target: { value: 'TestName' } });
+    expect(screen.getByLabelText('Имя:')).toHaveValue('TestName');
+
+    // date input tests
+    const dateInput = screen.getByTestId('date-input') as HTMLInputElement;
+    const date = new Date();
+    const currentDate = date.toISOString().substring(0, 10);
+    dateInput.value = currentDate;
+
+    //select input tests
+    const selectInput = screen.getByTestId('select-input') as HTMLSelectElement;
+    selectInput.value = 'Более 10 кг';
+
+    //file input tests
+    global.URL.createObjectURL = jest.fn();
+    const fileInput = screen.getByTestId('file-input') as HTMLInputElement;
+    const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' });
+    userEvent.upload(fileInput, file);
+
+    //courier input tests
+    const courierInput = screen.getByTestId('courier-input') as HTMLInputElement;
+    courierInput.checked = true;
+
+    //submit button tests
+    const submitBtn = screen.getByTestId('submit-btn') as HTMLInputElement;
+    await act(() => userEvent.click(submitBtn));
+
+    expect(screen.getByText('Данные сохранены!'));
+
+    const card = screen.getByTestId('card') as HTMLDivElement;
     expect(screen.getByText('TestName'));
     expect((card.querySelector('.card__date') as HTMLDivElement).innerHTML.includes(currentDate));
     expect((card.querySelector('.card__type') as HTMLDivElement).innerHTML.includes('Более 10 кг'));
