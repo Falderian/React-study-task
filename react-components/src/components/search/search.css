@@ -1,3 +1,10 @@
+.spinner-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+}
+
 .spinner {
   position: relative;
   width: 150px;
@@ -66,6 +73,7 @@
   justify-content: center;
   align-content: center;
   gap: 20px;
+  transition: 1s;
 }
 
 .search-form {

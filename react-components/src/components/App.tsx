@@ -5,7 +5,7 @@ import { PageForms, PageFormsOnHooks } from './forms/pageForms';
 import { Layout } from './layout/layout';
 import { PageMainOnHooks } from './main/main';
 import { PageNotFound } from './pageNotFound/pageNotFound';
-import { PageSearch } from './search/search';
+import { PageSearch, PageSearchOnHooks } from './search/search';
 
 const App = () => {
   return (
@@ -17,6 +17,7 @@ const App = () => {
           <Route path="search" element={<PageSearch />} />
           <Route path="about" element={<PageAbout />} />
           <Route path="*" element={<PageNotFound />} />
+          <Route path="searchOnHooks" element={<PageSearchOnHooks />} />
         </Route>
       </Routes>
     </div>

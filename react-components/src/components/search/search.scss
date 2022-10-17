@@ -5,6 +5,13 @@ $basic-spinner-dimensions: 150px; //width and height of spinner
 $main-spinner-dimensions: $basic-spinner-dimensions - $border-width * 2; //width and height of bigger circle
 $small-spinner-dimensions: $main-spinner-dimensions * 0.7; //width and height of smaller circle
 
+.spinner-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+}
+
 .spinner {
   position: relative;
   width: $basic-spinner-dimensions;
@@ -78,6 +85,7 @@ $small-spinner-dimensions: $main-spinner-dimensions * 0.7; //width and height of
   justify-content: center;
   align-content: center;
   gap: 20px;
+  transition: 1s;
 }
 
 .search-form {
