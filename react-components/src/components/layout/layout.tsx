@@ -18,8 +18,8 @@ export const Layout = () => {
         <NavLink className="header__link" to="/about">
           About us
         </NavLink>
-        <NavLink className="header__link" to="/mainOnHooks">
-          MainOnHooks{' '}
+        <NavLink className="header__link" to="/formOnHooks">
+          Form on Hooks
         </NavLink>
       </header>
       <main className="main">

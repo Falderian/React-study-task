@@ -1,7 +1,9 @@
 import { imageStorage, saveItemToStorage, storage } from 'helpers/storage';
-import React, { ChangeEvent, RefObject } from 'react';
+import React, { ChangeEvent, FormEvent, RefObject, useEffect, useState } from 'react';
 import { DeliveryCard } from './deliveryCard/deliveryCard';
 import { disableForm } from './disableForm/disableForm';
+import { useForm } from 'react-hook-form';
+import { formData, IItemToRender } from 'interfaces/delivery';
 
 export class PageForms extends React.Component {
   nameInput!: RefObject<HTMLInputElement>;
@@ -28,6 +30,7 @@ export class PageForms extends React.Component {
   imageChangeHandler(event: ChangeEvent<HTMLInputElement>) {
     const { files } = event.target;
     const src = window.URL.createObjectURL(files![0]);
+    console.log(src);
     imageStorage.push(src);
   }
 
@@ -151,3 +154,126 @@ export class PageForms extends React.Component {
     );
   }
 }
+
+export const PageFormsOnHooks = () => {
+  const { register, handleSubmit } = useForm<formData>();
+
+  const [imgSrc, setImgSrc] = useState('');
+  const [items, setItems] = useState<IItemToRender[]>([]);
+
+  const onSubmit = (data: formData): void => {
+    const temp: IItemToRender = {
+      name: data.name,
+      date: data.date.toString(),
+      select: data.select,
+      courier: data.courier,
+      imgSrc: imgSrc,
+    };
+    setItems((items) => [...items, temp]);
+  };
+
+  const imageChangeHandler = (event: FormEvent<HTMLInputElement>) => {
+    const { files } = event.currentTarget;
+    const src = window.URL.createObjectURL(files![0]);
+    setImgSrc(src);
+  };
+
+  const resetInputsValues = () => {
+    console.log('reset');
+  };
+
+  const disableSubmitBtn = (evt: ChangeEvent<HTMLInputElement>) => {
+    !evt.currentTarget.value
+      ? ((document.getElementById('submit-btn') as HTMLInputElement).disabled = true)
+      : ((document.getElementById('submit-btn') as HTMLInputElement).disabled = false);
+  };
+
+  return (
+    <>
+      <form className="form" onSubmit={handleSubmit(onSubmit)}>
+        Внесите данные:
+        <label className="form__label">
+          Имя:
+          <input
+            type="text"
+            id="nameInput"
+            required
+            {...register('name')}
+            onChange={(evt) => {
+              disableSubmitBtn(evt);
+            }}
+          />
+        </label>
+        <label className="form__label">
+          Дата отправки:
+          <input type="date" id="dateInput" required {...register('date')} />
+        </label>
+        <label className="form__label">
+          Выберите тип посылки:
+          <select required id="optionDeliveryInput" {...register('select')}>
+            <option>До 10 кг</option>
+            <option>Более 10 кг</option>
+          </select>
+        </label>
+        <label className="form__label">
+          Фото посылки:
+          <input
+            id="file-input"
+            type="file"
+            required
+            accept="image/*"
+            onChange={(evt) => {
+              imageChangeHandler(evt);
+            }}
+          />
+        </label>
+        <label className="form__label">
+          Доставка курьером:
+          <input
+            type="checkbox"
+            id="courierInput"
+            defaultChecked={false}
+            {...register('courier')}
+          />
+        </label>
+        <input
+          className="form__submit-btn"
+          id="submit-btn"
+          disabled
+          type="submit"
+          value="Отправить"
+        />
+        <button
+          className="form__reset-btn"
+          onClick={(evt) => {
+            evt.preventDefault();
+            disableForm(false);
+            resetInputsValues();
+          }}
+        >
+          Сбросить данные
+        </button>
+        <div className="form__confirm-div inactive" id="confirm-div">
+          Данные сохранены!
+        </div>
+      </form>
+      <div id="cards" className="cards">
+        <h4 className="card__heading">Список посылок: </h4>
+        <div className="cards__cont">
+          {items.map((el) => {
+            return (
+              <DeliveryCard
+                key={el.name + items.indexOf(el)}
+                name={el.name}
+                dateSend={el.date.toString()}
+                optionDelivery={el.select}
+                courier={el.courier ? 'да' : 'нет'}
+                imageSrc={el.imgSrc}
+              />
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+};

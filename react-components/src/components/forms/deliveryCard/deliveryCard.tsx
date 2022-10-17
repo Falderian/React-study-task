@@ -3,6 +3,7 @@ import React from 'react';
 
 export const DeliveryCard = (deliveryPackage: IDeliveryPackage) => {
   const imageSrc = deliveryPackage.imageSrc;
+  console.log(deliveryPackage, 'is rendered');
   return (
     <div className="card">
       <h4 className="card__heading">{deliveryPackage.name}</h4>
