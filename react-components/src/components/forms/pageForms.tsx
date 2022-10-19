@@ -1,9 +1,10 @@
 import { imageStorage, saveItemToStorage, storage } from 'helpers/storage';
-import React, { ChangeEvent, FormEvent, RefObject, useEffect, useState } from 'react';
+import React, { ChangeEvent, FormEvent, RefObject, useContext, useState } from 'react';
 import { DeliveryCard } from './deliveryCard/deliveryCard';
 import { disableForm } from './disableForm/disableForm';
 import { useForm } from 'react-hook-form';
 import { formData, IItemToRender } from 'interfaces/delivery';
+import { AppContext } from 'helpers/stateManamement/context';
 
 export class PageForms extends React.Component {
   nameInput!: RefObject<HTMLInputElement>;
@@ -157,8 +158,9 @@ export class PageForms extends React.Component {
 export const PageFormsOnHooks = () => {
   const { register, handleSubmit, reset } = useForm<formData>();
 
+  const { state, dispatch } = useContext(AppContext);
+
   const [imgSrc, setImgSrc] = useState('');
-  const [items, setItems] = useState<IItemToRender[]>([]);
 
   const onSubmit = (data: formData): void => {
     const temp: IItemToRender = {
@@ -168,10 +170,13 @@ export const PageFormsOnHooks = () => {
       courier: data.courier,
       imgSrc: imgSrc,
     };
-    setItems((items) => [...items, temp]);
     disableSubmitBtn(true);
     disableForm(true);
     showMsgDataSaved();
+    dispatch({
+      type: 'add_item_form',
+      payload: { form_item: temp, search_items: state.searchData },
+    });
   };
 
   const imageChangeHandler = (event: FormEvent<HTMLInputElement>) => {
@@ -283,10 +288,10 @@ export const PageFormsOnHooks = () => {
       <div id="cards" className="cards">
         <h4 className="card__heading">Список посылок: </h4>
         <div className="cards__cont" data-testid="cards">
-          {items.map((el) => {
+          {state.formData.map((el) => {
             return (
               <DeliveryCard
-                key={el.name + items.indexOf(el)}
+                key={el.name + state.formData.indexOf(el)}
                 name={el.name}
                 dateSend={el.date.toString()}
                 optionDelivery={el.select}

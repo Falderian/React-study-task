@@ -3,6 +3,7 @@ import axios from 'axios';
 import { returnGenresString, YoutubeEmbed } from 'helpers/modalHelpers';
 import { ICardResponse, ISearchCards } from 'interfaces/searchCard';
 import React, { RefObject, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Component } from 'react';
 
 export class PageSearch extends Component {
@@ -251,6 +252,8 @@ export class PageSearch extends Component {
 }
 
 export const PageSearchOnHooks = () => {
+  const router = useNavigate();
+
   const apiKey = `0e655211503a99e2b6a8909e76f606a6`;
   const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`;
   const apiImg = `https://image.tmdb.org/t/p/w500`;
@@ -259,8 +262,8 @@ export const PageSearchOnHooks = () => {
   const searchInput: RefObject<HTMLInputElement> = React.createRef();
 
   const [loaded, setLoaded] = useState(true);
-  const [modalLoaded, setLoadedModal] = useState(false);
-  const [modal, setModal] = useState(false);
+  // const [modalLoaded, setLoadedModal] = useState(false);
+  // const [modal, setModal] = useState(false);
   const [trailerKey, setTrailerKey] = useState('');
   const [movie, setMovie] = useState<ICardResponse>();
   const [moviesData, setMoviesData] = useState<ICardResponse[]>([]);
@@ -307,7 +310,7 @@ export const PageSearchOnHooks = () => {
         return el.key;
       });
       setTrailerKey(videoUrl.key);
-      setLoadedModal(true);
+      // setLoadedModal(true);
     } catch (error) {
       console.log(error);
     }
@@ -315,7 +318,7 @@ export const PageSearchOnHooks = () => {
 
   return (
     <div className="search__wrapper">
-      {!modal ? (
+      {/* {!modal ? (
         ''
       ) : (
         <div className="modal">
@@ -356,7 +359,7 @@ export const PageSearchOnHooks = () => {
             )}
           </div>
         </div>
-      )}
+      )} */}
       <div className="search">
         <form
           data-testid="form-id"
@@ -405,8 +408,8 @@ export const PageSearchOnHooks = () => {
                     id={el.id.toString()}
                     className="card__btn"
                     onClick={(evt) => {
-                      setLoadedModal(false);
-                      setModal(true);
+                      // setLoadedModal(false);
+                      // setModal(true);
                       const movie = moviesData.find((el) => {
                         el.id === Number((evt.target as HTMLButtonElement).id);
                         return el;
@@ -414,6 +417,7 @@ export const PageSearchOnHooks = () => {
                       setMovie(movie);
                       getMovieInfo((evt.target as HTMLButtonElement).id);
                       getMovieTrailer((evt.target as HTMLButtonElement).id);
+                      router(`${(evt.target as HTMLButtonElement).id}`);
                     }}
                   >
                     View more
