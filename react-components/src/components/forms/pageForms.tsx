@@ -175,7 +175,7 @@ export const PageFormsOnHooks = () => {
     showMsgDataSaved();
     dispatch({
       type: 'add_item_form',
-      payload: { form_item: temp, search_items: state.searchData },
+      payload: { form_item: temp, search_items: [...state.searchData] },
     });
   };
 

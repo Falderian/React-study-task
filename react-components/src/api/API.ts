@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const apiKey = `0e655211503a99e2b6a8909e76f606a6`;
+export const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`;
 
 export const baseApi = async (url: string) => {
   try {
@@ -30,6 +31,15 @@ export const getMovieTrailer = async (id: string) => {
       return el.key;
     });
     return videoUrl.key;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const requestWithUrl = async (url: string) => {
+  try {
+    const result = await axios.get(url);
+    return result.data.results;
   } catch (error) {
     console.log(error);
   }

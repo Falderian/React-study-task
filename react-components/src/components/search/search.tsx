@@ -1,10 +1,12 @@
-import { baseApi } from 'api/API';
+import { baseApi, requestWithUrl } from 'api/API';
 import axios from 'axios';
 import { returnGenresString, YoutubeEmbed } from 'helpers/modalHelpers';
 import { ICardResponse, ISearchCards } from 'interfaces/searchCard';
-import React, { RefObject, useEffect, useState } from 'react';
+import React, { RefObject, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Component } from 'react';
+import { AppContext } from 'helpers/stateManamement/context';
+import { stat } from 'fs';
 
 export class PageSearch extends Component {
   apiKey = `0e655211503a99e2b6a8909e76f606a6`;
@@ -268,18 +270,19 @@ export const PageSearchOnHooks = () => {
   const [movie, setMovie] = useState<ICardResponse>();
   const [moviesData, setMoviesData] = useState<ICardResponse[]>([]);
 
-  useEffect(() => {
-    requestWithUrl(apiUrl).then((data) => setMoviesData(data));
-  }, []);
+  const { state, dispatch } = useContext(AppContext);
 
-  const requestWithUrl = async (url: string) => {
-    try {
-      const result = await axios.get(url);
-      return result.data.results;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // useEffect(() => {
+  //   requestWithUrl(apiUrl).then((data) =>
+  //     dispatch({
+  //       type: 'add_items_search',
+  //       payload: {
+  //         form_item: { name: '', date: '', select: '', courier: false, imgSrc: '' },
+  //         search_items: data,
+  //       },
+  //     })
+  //   );
+  // }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
@@ -287,8 +290,14 @@ export const PageSearchOnHooks = () => {
     const movies: ICardResponse[] = await requestWithUrl(
       apiSearch + '=' + searchInput.current!.value
     );
+    dispatch({
+      type: 'add_items_search',
+      payload: {
+        form_item: { name: '', date: '', select: '', courier: false, imgSrc: '' },
+        search_items: movies,
+      },
+    });
     setLoaded(true);
-    setMoviesData(movies);
   }
 
   const getMovieInfo = async (id: string) => {
@@ -395,10 +404,10 @@ export const PageSearchOnHooks = () => {
         </div>
       ) : (
         <div className="search__cards">
-          {Boolean(!moviesData.length) ? (
+          {Boolean(!state.searchData.length) ? (
             <div className="search__not-found">Sorry, nothing was found.</div>
           ) : (
-            moviesData.map((el) => {
+            state.searchData.map((el) => {
               return (
                 <div key={el.id} className="card" data-testid="card">
                   <div className="card__img-cont">
@@ -410,7 +419,7 @@ export const PageSearchOnHooks = () => {
                     onClick={(evt) => {
                       // setLoadedModal(false);
                       // setModal(true);
-                      const movie = moviesData.find((el) => {
+                      const movie = state.searchData.find((el) => {
                         el.id === Number((evt.target as HTMLButtonElement).id);
                         return el;
                       });

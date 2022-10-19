@@ -1,7 +1,7 @@
+import { apiUrl, requestWithUrl } from 'api/API';
 import { AppContext, initialState } from 'helpers/stateManamement/context';
 import { reducer } from 'helpers/stateManamement/reducer';
-import { IItemToRender } from 'interfaces/delivery';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { PageAbout } from './about/about';
 import { PageFormsOnHooks } from './forms/pageForms';
@@ -12,6 +12,18 @@ import { MoviePage } from './search/moviePage';
 import { PageSearchOnHooks } from './search/search';
 
 const App = () => {
+  useEffect(() => {
+    requestWithUrl(apiUrl).then((data) =>
+      dispatch({
+        type: 'add_items_search',
+        payload: {
+          form_item: { name: '', date: '', select: '', courier: false, imgSrc: '' },
+          search_items: data,
+        },
+      })
+    );
+  }, []);
+
   const [state, dispatch] = React.useReducer(reducer, initialState);
   return (
     <div>
