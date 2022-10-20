@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { Component } from 'react';
 import { AppContext } from 'helpers/stateManamement/context';
 import { stat } from 'fs';
+import { Pagination } from './pagination';
 
 export class PageSearch extends Component {
   apiKey = `0e655211503a99e2b6a8909e76f606a6`;
@@ -254,35 +255,20 @@ export class PageSearch extends Component {
 }
 
 export const PageSearchOnHooks = () => {
-  const router = useNavigate();
-
   const apiKey = `0e655211503a99e2b6a8909e76f606a6`;
-  const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`;
   const apiImg = `https://image.tmdb.org/t/p/w500`;
   const apiSearch = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query`;
 
   const searchInput: RefObject<HTMLInputElement> = React.createRef();
 
-  const [loaded, setLoaded] = useState(true);
-  // const [modalLoaded, setLoadedModal] = useState(false);
-  // const [modal, setModal] = useState(false);
-  const [trailerKey, setTrailerKey] = useState('');
-  const [movie, setMovie] = useState<ICardResponse>();
-  const [moviesData, setMoviesData] = useState<ICardResponse[]>([]);
-
+  const router = useNavigate();
   const { state, dispatch } = useContext(AppContext);
+  const [loaded, setLoaded] = useState(true);
+  const [moviesPerPage, setMoviesPerPage] = useState(4);
 
-  // useEffect(() => {
-  //   requestWithUrl(apiUrl).then((data) =>
-  //     dispatch({
-  //       type: 'add_items_search',
-  //       payload: {
-  //         form_item: { name: '', date: '', select: '', courier: false, imgSrc: '' },
-  //         search_items: data,
-  //       },
-  //     })
-  //   );
-  // }, []);
+  const lastMovieIndex = state.currentPage * moviesPerPage;
+  const firstMovieIndex = lastMovieIndex - moviesPerPage;
+  const currentMovies = state.searchData.slice(firstMovieIndex, lastMovieIndex);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
@@ -295,80 +281,15 @@ export const PageSearchOnHooks = () => {
       payload: {
         form_item: { name: '', date: '', select: '', courier: false, imgSrc: '' },
         search_items: movies,
+        current_page: state.currentPage,
+        sort: state.sort,
       },
     });
     setLoaded(true);
   }
 
-  const getMovieInfo = async (id: string) => {
-    try {
-      const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}`;
-      const data = await axios.get(url);
-      setMovie(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getMovieTrailer = async (id: string) => {
-    try {
-      const url = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${apiKey}&language=en-US`;
-      const data = await axios.get(url);
-      const videoUrl = data.data.results.find((el: { key: string; type: string | string[] }) => {
-        el.type.includes('Trailer');
-        return el.key;
-      });
-      setTrailerKey(videoUrl.key);
-      // setLoadedModal(true);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <div className="search__wrapper">
-      {/* {!modal ? (
-        ''
-      ) : (
-        <div className="modal">
-          <div className="overlay">
-            {!modalLoaded ? (
-              <div className="spinner-block">
-                <div className="spinner spinner-1"></div>
-              </div>
-            ) : (
-              <>
-                <div className="modal__content">
-                  <img src={apiImg + '/' + movie!.poster_path}></img>
-                  <div className="modal__description">
-                    <h4 className="card__title">Title: {movie!.title}</h4>
-                    <div className="card__release-date">Release date: {movie!.release_date}</div>
-                    <div className="modal__movie-status">Status: {movie!.status}</div>
-                    <div className="modal__runtime">Runtime: {movie!.runtime} mins</div>
-                    <div className="card_popularity">Popularity: {movie!.popularity}</div>
-                    <div className="card__vote-count">Vote count: {movie!.vote_count}</div>
-                    <div className="card__vote-average">Vote average: {movie!.vote_average}</div>
-                    <div className="modal__movie-description">Description: {movie!.overview}</div>
-                  </div>
-                  <div className="modal__close">
-                    <button
-                      className="modal__close-btn"
-                      onClick={() => {
-                        setModal(false);
-                      }}
-                    >
-                      X
-                    </button>
-                  </div>
-                </div>
-                <div className="modal__trailer">
-                  <YoutubeEmbed embedId={trailerKey} />
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )} */}
       <div className="search">
         <form
           data-testid="form-id"
@@ -404,10 +325,10 @@ export const PageSearchOnHooks = () => {
         </div>
       ) : (
         <div className="search__cards">
-          {Boolean(!state.searchData.length) ? (
+          {Boolean(!currentMovies.length) ? (
             <div className="search__not-found">Sorry, nothing was found.</div>
           ) : (
-            state.searchData.map((el) => {
+            currentMovies.map((el) => {
               return (
                 <div key={el.id} className="card" data-testid="card">
                   <div className="card__img-cont">
@@ -419,13 +340,10 @@ export const PageSearchOnHooks = () => {
                     onClick={(evt) => {
                       // setLoadedModal(false);
                       // setModal(true);
-                      const movie = state.searchData.find((el) => {
+                      const movie = currentMovies.find((el) => {
                         el.id === Number((evt.target as HTMLButtonElement).id);
                         return el;
                       });
-                      setMovie(movie);
-                      getMovieInfo((evt.target as HTMLButtonElement).id);
-                      getMovieTrailer((evt.target as HTMLButtonElement).id);
                       router(`${(evt.target as HTMLButtonElement).id}`);
                     }}
                   >
@@ -437,6 +355,7 @@ export const PageSearchOnHooks = () => {
           )}
         </div>
       )}
+      <Pagination totalMovies={state.searchData.length} moviesPerPage={moviesPerPage} />
     </div>
   );
 };

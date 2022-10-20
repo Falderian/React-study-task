@@ -5,6 +5,7 @@ import { disableForm } from './disableForm/disableForm';
 import { useForm } from 'react-hook-form';
 import { formData, IItemToRender } from 'interfaces/delivery';
 import { AppContext } from 'helpers/stateManamement/context';
+import { stat } from 'fs';
 
 export class PageForms extends React.Component {
   nameInput!: RefObject<HTMLInputElement>;
@@ -175,7 +176,12 @@ export const PageFormsOnHooks = () => {
     showMsgDataSaved();
     dispatch({
       type: 'add_item_form',
-      payload: { form_item: temp, search_items: [...state.searchData] },
+      payload: {
+        form_item: temp,
+        search_items: [...state.searchData],
+        current_page: state.currentPage,
+        sort: state.sort,
+      },
     });
   };
 

@@ -4,4 +4,6 @@ import { ICardResponse } from './searchCard';
 export interface IState {
   formData: IItemToRender[];
   searchData: ICardResponse[];
+  currentPage: number;
+  sort: string;
 }

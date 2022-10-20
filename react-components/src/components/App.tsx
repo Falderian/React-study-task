@@ -19,6 +19,8 @@ const App = () => {
         payload: {
           form_item: { name: '', date: '', select: '', courier: false, imgSrc: '' },
           search_items: data,
+          current_page: state.currentPage,
+          sort: state.sort,
         },
       })
     );

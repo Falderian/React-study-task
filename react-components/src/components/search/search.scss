@@ -125,7 +125,7 @@ $small-spinner-dimensions: $main-spinner-dimensions * 0.7; //width and height of
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    width: 30%;
+    width: 20%;
     padding: 5px;
     transition: 0.3s;
     border-radius: 15px;
@@ -311,5 +311,29 @@ $small-spinner-dimensions: $main-spinner-dimensions * 0.7; //width and height of
       align-items: flex-start;
       gap: 2px;
     }
+  }
+}
+
+.search__pagination {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  button:active {
+    border-radius: 5px;
+    border: rebeccapurple 3px solid;
+  }
+  button:hover {
+    background-color: black;
+    color: white;
+  }
+  .active_page {
+    background-color: black;
+    border: rebeccapurple 3px solid;
+
+    color: white;
   }
 }

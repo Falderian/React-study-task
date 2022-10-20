@@ -1,22 +1,31 @@
-import { getMovieInfo, getMovieTrailer } from 'api/API';
-import { YoutubeEmbed } from 'helpers/modalHelpers';
+import { getMovieTrailer } from 'api/API';
+import { returnGenresString, YoutubeEmbed } from 'helpers/modalHelpers';
+import { AppContext } from 'helpers/stateManamement/context';
 import { ICardResponse } from 'interfaces/searchCard';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export const MoviePage = () => {
-  const params = useParams();
   const [movie, setMovie] = useState<ICardResponse>();
   const [isLoaded, setLoaded] = useState(true);
   const [trailerKey, setTrailerKey] = useState('');
+
+  const params = useParams();
   const navigate = useNavigate();
+
+  const { state } = useContext(AppContext);
 
   useEffect(() => {
     setLoaded(false);
     const id = params.id!.toString();
-    getMovieInfo(id).then((data) => setMovie(data));
-    getMovieTrailer(id).then((res) => setTrailerKey(res));
-    setLoaded(true);
+    const temp = state.searchData.find((el) => {
+      return el.id === Number(params.id);
+    });
+    setMovie(temp);
+    getMovieTrailer(id).then((res) => {
+      setTrailerKey(res);
+      setLoaded(true);
+    });
   }, []);
 
   return (
@@ -37,10 +46,9 @@ export const MoviePage = () => {
           <div className="movie__description">
             <div className="movie__info">
               <div className="movie__title">Title: {movie?.title}</div>
-              <div className="movie__tagline">Tagline: {movie?.tagline}</div>
               <div className="movie__release-date">Release date: {movie?.release_date}</div>
-              <div className="movie__status">Status: {movie?.status}</div>
-              <div className="movie__runtime">Runtime: {movie?.runtime + ` mins`}</div>
+              <div className="movie__status">Popularity: {movie?.popularity.toFixed(0)}</div>
+              <div className="movie__runtime">Vote average: {movie?.vote_average}</div>
               <div className="movie__overview">Overview: {movie?.overview}</div>
             </div>
             <div className="movie__trailer">

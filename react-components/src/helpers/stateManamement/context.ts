@@ -7,11 +7,18 @@ import React from 'react';
 export const initialState: IState = {
   formData: [],
   searchData: [],
+  currentPage: 1,
+  sort: 'asc,',
 };
 
 export type Taction = {
   type: string;
-  payload: { form_item: IItemToRender; search_items: ICardResponse[] };
+  payload: {
+    current_page: number;
+    form_item: IItemToRender;
+    search_items: ICardResponse[];
+    sort: string;
+  };
 };
 
 export const AppContext = React.createContext<{
