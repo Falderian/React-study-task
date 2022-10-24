@@ -23,6 +23,7 @@ export const Pagination = ({
         search_items: [...state.searchData],
         current_page: page,
         sort: state.sort,
+        movies_per_page: state.moviesPerPage,
       },
     });
   };

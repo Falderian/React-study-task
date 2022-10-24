@@ -94,6 +94,7 @@ $small-spinner-dimensions: $main-spinner-dimensions * 0.7; //width and height of
   align-items: center;
   align-content: center;
   flex-wrap: nowrap;
+  flex-direction: column;
   gap: 5px;
 
   border: 0.7px solid white;
@@ -107,6 +108,9 @@ $small-spinner-dimensions: $main-spinner-dimensions * 0.7; //width and height of
     align-content: center;
     flex-direction: row;
     gap: 10px;
+  }
+  .search__input-div {
+    display: flex;
   }
 }
 
@@ -321,7 +325,7 @@ $small-spinner-dimensions: $main-spinner-dimensions * 0.7; //width and height of
   align-content: center;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   button:active {
     border-radius: 5px;
     border: rebeccapurple 3px solid;

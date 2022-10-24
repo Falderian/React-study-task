@@ -6,8 +6,9 @@ import React, { RefObject, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Component } from 'react';
 import { AppContext } from 'helpers/stateManamement/context';
-import { stat } from 'fs';
+import { SearchSelect } from './selectMoviesPerPage';
 import { Pagination } from './pagination';
+import { SearchSort } from './moviesSort';
 
 export class PageSearch extends Component {
   apiKey = `0e655211503a99e2b6a8909e76f606a6`;
@@ -258,21 +259,21 @@ export const PageSearchOnHooks = () => {
   const apiKey = `0e655211503a99e2b6a8909e76f606a6`;
   const apiImg = `https://image.tmdb.org/t/p/w500`;
   const apiSearch = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query`;
-
   const searchInput: RefObject<HTMLInputElement> = React.createRef();
 
   const router = useNavigate();
   const { state, dispatch } = useContext(AppContext);
   const [loaded, setLoaded] = useState(true);
-  const [moviesPerPage, setMoviesPerPage] = useState(4);
 
-  const lastMovieIndex = state.currentPage * moviesPerPage;
-  const firstMovieIndex = lastMovieIndex - moviesPerPage;
+  const lastMovieIndex = state.currentPage * state.moviesPerPage;
+  const firstMovieIndex = lastMovieIndex - state.moviesPerPage;
   const currentMovies = state.searchData.slice(firstMovieIndex, lastMovieIndex);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
     setLoaded(false);
+    localStorage.setItem('search_input', searchInput.current!.value);
+
     const movies: ICardResponse[] = await requestWithUrl(
       apiSearch + '=' + searchInput.current!.value
     );
@@ -283,6 +284,7 @@ export const PageSearchOnHooks = () => {
         search_items: movies,
         current_page: state.currentPage,
         sort: state.sort,
+        movies_per_page: state.moviesPerPage,
       },
     });
     setLoaded(true);
@@ -298,25 +300,30 @@ export const PageSearchOnHooks = () => {
             handleSubmit(e);
           }}
         >
-          <label htmlFor="search-form-input" className="search-form__label">
-            Enter data request:
-            <input
-              required
-              className="search-form__input"
-              type="text"
-              id="search-form-input"
-              ref={searchInput}
-              placeholder="Type here"
-            ></input>
-          </label>
-          <button
-            data-destid="submit-btn"
-            className="search-form_submit-btn"
-            type="submit"
-            id="submit-btn"
-          >
-            Send
-          </button>
+          <div className="search__input-div">
+            <label htmlFor="search-form-input" className="search-form__label">
+              Enter data request:
+              <input
+                required
+                className="search-form__input"
+                type="text"
+                id="search-form-input"
+                ref={searchInput}
+                defaultValue={localStorage.getItem('search_input')!}
+                placeholder="Type here"
+              ></input>
+            </label>
+            <button
+              data-destid="submit-btn"
+              className="search-form_submit-btn"
+              type="submit"
+              id="submit-btn"
+            >
+              Send
+            </button>
+          </div>
+          <SearchSelect />
+          <SearchSort />
         </form>
       </div>
       {!loaded ? (
@@ -355,7 +362,7 @@ export const PageSearchOnHooks = () => {
           )}
         </div>
       )}
-      <Pagination totalMovies={state.searchData.length} moviesPerPage={moviesPerPage} />
+      <Pagination totalMovies={state.searchData.length} moviesPerPage={state.moviesPerPage} />
     </div>
   );
 };

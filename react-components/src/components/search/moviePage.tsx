@@ -26,6 +26,11 @@ export const MoviePage = () => {
       setTrailerKey(res);
       setLoaded(true);
     });
+    const headerLinks = document.querySelectorAll('.header__link');
+    headerLinks[2].innerHTML = temp!.title;
+    return () => {
+      headerLinks[2].innerHTML = 'Search';
+    };
   }, []);
 
   return (

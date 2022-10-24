@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const apiKey = `0e655211503a99e2b6a8909e76f606a6`;
 export const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`;
+export const apiSearch = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query`;
 
 export const baseApi = async (url: string) => {
   try {

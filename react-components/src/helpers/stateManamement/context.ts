@@ -1,4 +1,3 @@
-// import { apiUrl, requestWithUrl } from 'api/API';
 import { IItemToRender } from 'interfaces/delivery';
 import { ICardResponse } from 'interfaces/searchCard';
 import { IState } from 'interfaces/stateManagement';
@@ -8,16 +7,18 @@ export const initialState: IState = {
   formData: [],
   searchData: [],
   currentPage: 1,
-  sort: 'asc,',
+  sort: 'by newest',
+  moviesPerPage: 1,
 };
 
 export type Taction = {
   type: string;
   payload: {
-    current_page: number;
     form_item: IItemToRender;
+    current_page: number;
     search_items: ICardResponse[];
     sort: string;
+    movies_per_page: number;
   };
 };
 

@@ -82,6 +82,7 @@
   align-items: center;
   align-content: center;
   flex-wrap: nowrap;
+  flex-direction: column;
   gap: 5px;
   border: 0.7px solid white;
   border-radius: 5px;
@@ -95,6 +96,10 @@
   align-content: center;
   flex-direction: row;
   gap: 10px;
+}
+
+.search-form .search__input-div {
+  display: flex;
 }
 
 .search__cards {
@@ -327,7 +332,7 @@
   align-content: center;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
 }
 
 .search__pagination button:active {

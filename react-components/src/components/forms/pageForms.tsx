@@ -181,6 +181,7 @@ export const PageFormsOnHooks = () => {
         search_items: [...state.searchData],
         current_page: state.currentPage,
         sort: state.sort,
+        movies_per_page: state.moviesPerPage,
       },
     });
   };

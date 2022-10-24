@@ -6,4 +6,5 @@ export interface IState {
   searchData: ICardResponse[];
   currentPage: number;
   sort: string;
+  moviesPerPage: number;
 }

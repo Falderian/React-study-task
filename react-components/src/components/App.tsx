@@ -1,4 +1,4 @@
-import { apiUrl, requestWithUrl } from 'api/API';
+import { apiSearch, apiUrl, requestWithUrl } from 'api/API';
 import { AppContext, initialState } from 'helpers/stateManamement/context';
 import { reducer } from 'helpers/stateManamement/reducer';
 import React, { useEffect } from 'react';
@@ -13,7 +13,8 @@ import { PageSearchOnHooks } from './search/search';
 
 const App = () => {
   useEffect(() => {
-    requestWithUrl(apiUrl).then((data) =>
+    const searchInput = localStorage.getItem('search_input');
+    requestWithUrl(apiSearch + '=' + searchInput).then((data) =>
       dispatch({
         type: 'add_items_search',
         payload: {
@@ -21,6 +22,7 @@ const App = () => {
           search_items: data,
           current_page: state.currentPage,
           sort: state.sort,
+          movies_per_page: state.moviesPerPage,
         },
       })
     );
