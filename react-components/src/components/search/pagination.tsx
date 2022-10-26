@@ -1,5 +1,7 @@
-import { AppContext } from 'helpers/stateManamement/context';
-import React, { Dispatch, SetStateAction, useContext } from 'react';
+import { setCurrentPage } from 'helpers/redux/searchSlice';
+import { IStore } from 'helpers/redux/store';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const Pagination = ({
   totalMovies,
@@ -8,24 +10,24 @@ export const Pagination = ({
   totalMovies: number;
   moviesPerPage: number;
 }) => {
-  const { state, dispatch } = useContext(AppContext);
   const pages = [];
+
+  const dispatch = useDispatch();
+  const state = useSelector<IStore>((state) => state) as IStore;
 
   for (let i = 1; i <= Math.ceil(totalMovies / moviesPerPage); i++) {
     pages.push(i);
   }
 
-  const setCurrentPage = (page: number) => {
-    dispatch({
-      type: 'set_current_page',
-      payload: {
-        form_item: { name: '', date: '', select: '', courier: false, imgSrc: '' },
-        search_items: [...state.searchData],
-        current_page: page,
-        sort: state.sort,
-        movies_per_page: state.moviesPerPage,
-      },
-    });
+  const setPage = (page: number) => {
+    dispatch(
+      setCurrentPage({
+        searchItems: state.searchData.searchItems,
+        currentPage: page,
+        sort: state.searchData.sort,
+        moviesPerPage: state.searchData.moviesPerPage,
+      })
+    );
   };
 
   return (
@@ -34,8 +36,8 @@ export const Pagination = ({
         return (
           <button
             key={index}
-            className={page === state.currentPage ? 'active_page' : 'nonactive_page'}
-            onClick={() => setCurrentPage(page)}
+            className={page === state.searchData.currentPage ? 'active_page' : 'nonactive_page'}
+            onClick={() => setPage(page)}
           >
             {page}
           </button>

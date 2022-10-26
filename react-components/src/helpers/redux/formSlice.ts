@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IItemToRender } from 'interfaces/delivery';
-import { ReduxAction } from 'interfaces/stateManagement';
+import { FormAction } from 'interfaces/stateManagement';
 
 const initialState: { formItems: IItemToRender[] } = { formItems: [] };
 
@@ -8,7 +8,7 @@ const formSlice = createSlice({
   name: 'formSlice',
   initialState,
   reducers: {
-    addItemForm(state, action: ReduxAction) {
+    addItemForm(state, action: FormAction) {
       state.formItems.push(action.payload.formItem);
     },
   },

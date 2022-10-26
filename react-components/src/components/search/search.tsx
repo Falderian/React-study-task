@@ -1,14 +1,17 @@
-import { baseApi, requestWithUrl } from 'api/API';
+import { baseApi, fetchMovies, requestWithUrl } from 'api/API';
 import axios from 'axios';
 import { returnGenresString, YoutubeEmbed } from 'helpers/modalHelpers';
 import { ICardResponse, ISearchCards } from 'interfaces/searchCard';
-import React, { RefObject, useContext, useEffect, useState } from 'react';
+import React, { RefObject, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Component } from 'react';
-import { AppContext } from 'helpers/stateManamement/context';
+import { AnyAction } from '@reduxjs/toolkit';
 import { SearchSelect } from './selectMoviesPerPage';
 import { Pagination } from './pagination';
 import { SearchSort } from './moviesSort';
+import { useDispatch, useSelector } from 'react-redux';
+import { IStore } from 'helpers/redux/store';
+import { addItemsSearch } from 'helpers/redux/searchSlice';
 
 export class PageSearch extends Component {
   apiKey = `0e655211503a99e2b6a8909e76f606a6`;
@@ -262,31 +265,26 @@ export const PageSearchOnHooks = () => {
   const searchInput: RefObject<HTMLInputElement> = React.createRef();
 
   const router = useNavigate();
-  const { state, dispatch } = useContext(AppContext);
   const [loaded, setLoaded] = useState(true);
 
-  const lastMovieIndex = state.currentPage * state.moviesPerPage;
-  const firstMovieIndex = lastMovieIndex - state.moviesPerPage;
-  const currentMovies = state.searchData.slice(firstMovieIndex, lastMovieIndex);
+  const dispatch = useDispatch();
+  const state = useSelector<IStore>((state) => state) as IStore;
+  const searchItems = state.searchData.searchItems as ICardResponse[];
+  const currentPage = state.searchData.currentPage as number;
+  const sort = state.searchData.sort as string;
+  const moviesPerPage = state.searchData.moviesPerPage as number;
+
+  const lastMovieIndex = currentPage * moviesPerPage;
+  const firstMovieIndex = lastMovieIndex - moviesPerPage;
+  const currentMovies = searchItems.slice(firstMovieIndex, lastMovieIndex);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
     setLoaded(false);
     localStorage.setItem('search_input', searchInput.current!.value);
 
-    const movies: ICardResponse[] = await requestWithUrl(
-      apiSearch + '=' + searchInput.current!.value
-    );
-    dispatch({
-      type: 'add_items_search',
-      payload: {
-        form_item: { name: '', date: '', select: '', courier: false, imgSrc: '' },
-        search_items: movies,
-        current_page: state.currentPage,
-        sort: state.sort,
-        movies_per_page: state.moviesPerPage,
-      },
-    });
+    const url = apiSearch + '=' + searchInput.current!.value;
+    dispatch(fetchMovies(url) as unknown as AnyAction);
     setLoaded(true);
   }
 
@@ -332,7 +330,7 @@ export const PageSearchOnHooks = () => {
         </div>
       ) : (
         <div className="search__cards">
-          {Boolean(!currentMovies.length) ? (
+          {Boolean(!currentMovies) ? (
             <div className="search__not-found">Sorry, nothing was found.</div>
           ) : (
             currentMovies.map((el) => {
@@ -345,12 +343,6 @@ export const PageSearchOnHooks = () => {
                     id={el.id.toString()}
                     className="card__btn"
                     onClick={(evt) => {
-                      // setLoadedModal(false);
-                      // setModal(true);
-                      const movie = currentMovies.find((el) => {
-                        el.id === Number((evt.target as HTMLButtonElement).id);
-                        return el;
-                      });
                       router(`${(evt.target as HTMLButtonElement).id}`);
                     }}
                   >
@@ -362,7 +354,7 @@ export const PageSearchOnHooks = () => {
           )}
         </div>
       )}
-      <Pagination totalMovies={state.searchData.length} moviesPerPage={state.moviesPerPage} />
+      <Pagination totalMovies={searchItems.length} moviesPerPage={moviesPerPage} />
     </div>
   );
 };

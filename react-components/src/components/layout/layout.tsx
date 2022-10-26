@@ -1,8 +1,19 @@
-import React from 'react';
+import { AnyAction } from '@reduxjs/toolkit';
+import { apiSearch, fetchMovies } from 'api/API';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { NavLink, Outlet } from 'react-router-dom';
 import './layout.scss';
 
 export const Layout = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const searchInput = localStorage.getItem('search_input');
+    const url = apiSearch + '=' + searchInput;
+    dispatch(fetchMovies(url) as unknown as AnyAction);
+  }, []);
+
   return (
     <div className="wrapper">
       <header className="header">

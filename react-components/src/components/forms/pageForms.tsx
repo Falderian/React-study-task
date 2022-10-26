@@ -164,9 +164,6 @@ export const PageFormsOnHooks = () => {
   const dispatch = useDispatch();
 
   const [imgSrc, setImgSrc] = useState('');
-  useEffect(() => {
-    console.log(formItems);
-  });
 
   const onSubmit = (data: formData): void => {
     const temp: IItemToRender = {
