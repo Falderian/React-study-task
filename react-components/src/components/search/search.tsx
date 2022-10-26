@@ -11,7 +11,6 @@ import { Pagination } from './pagination';
 import { SearchSort } from './moviesSort';
 import { useDispatch, useSelector } from 'react-redux';
 import { IStore } from 'helpers/redux/store';
-import { addItemsSearch } from 'helpers/redux/searchSlice';
 
 export class PageSearch extends Component {
   apiKey = `0e655211503a99e2b6a8909e76f606a6`;
@@ -271,7 +270,6 @@ export const PageSearchOnHooks = () => {
   const state = useSelector<IStore>((state) => state) as IStore;
   const searchItems = state.searchData.searchItems as ICardResponse[];
   const currentPage = state.searchData.currentPage as number;
-  const sort = state.searchData.sort as string;
   const moviesPerPage = state.searchData.moviesPerPage as number;
 
   const lastMovieIndex = currentPage * moviesPerPage;
