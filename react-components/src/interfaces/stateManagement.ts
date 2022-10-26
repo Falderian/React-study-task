@@ -8,3 +8,10 @@ export interface IState {
   sort: string;
   moviesPerPage: number;
 }
+
+export type ReduxAction = {
+  type: string;
+  payload: {
+    formItem: IItemToRender;
+  };
+};

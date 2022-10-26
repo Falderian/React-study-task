@@ -1,4 +1,4 @@
-import { apiSearch, apiUrl, requestWithUrl } from 'api/API';
+import { apiSearch, requestWithUrl } from 'api/API';
 import { AppContext, initialState } from 'helpers/stateManamement/context';
 import { reducer } from 'helpers/stateManamement/reducer';
 import React, { useEffect } from 'react';
@@ -10,6 +10,9 @@ import { PageMainOnHooks } from './main/main';
 import { PageNotFound } from './pageNotFound/pageNotFound';
 import { MoviePage } from './search/moviePage';
 import { PageSearchOnHooks } from './search/search';
+
+import { Provider } from 'react-redux';
+import store from '../helpers/redux/store';
 
 const App = () => {
   useEffect(() => {
@@ -31,18 +34,20 @@ const App = () => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
   return (
     <div>
-      <AppContext.Provider value={{ state, dispatch }}>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<PageMainOnHooks />} />
-            <Route path="forms" element={<PageFormsOnHooks />} />
-            <Route path="search" element={<PageSearchOnHooks />} />
-            <Route path="about" element={<PageAbout />} />
-            <Route path="*" element={<PageNotFound />} />
-            <Route path="/search/:id" element={<MoviePage />} />
-          </Route>
-        </Routes>
-      </AppContext.Provider>
+      <Provider store={store}>
+        <AppContext.Provider value={{ state, dispatch }}>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<PageMainOnHooks />} />
+              <Route path="forms" element={<PageFormsOnHooks />} />
+              <Route path="search" element={<PageSearchOnHooks />} />
+              <Route path="about" element={<PageAbout />} />
+              <Route path="*" element={<PageNotFound />} />
+              <Route path="/search/:id" element={<MoviePage />} />
+            </Route>
+          </Routes>
+        </AppContext.Provider>
+      </Provider>
     </div>
   );
 };
