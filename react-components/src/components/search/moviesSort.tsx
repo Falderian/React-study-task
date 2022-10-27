@@ -1,7 +1,7 @@
 import { setSort } from 'helpers/redux/searchSlice';
 import { IStore } from 'helpers/redux/store';
 import { ICardResponse } from 'interfaces/searchCard';
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 export const SearchSort = () => {
@@ -9,7 +9,6 @@ export const SearchSort = () => {
 
   const dispatch = useDispatch();
   const state = useSelector<IStore>((state) => state) as IStore;
-  // const [sortType, setSortType] = useState('by newest');
 
   const handleSortChange = (str: string) => {
     const movies = sortMovies(state, str);
