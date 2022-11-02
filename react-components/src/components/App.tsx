@@ -1,7 +1,4 @@
-import { apiSearch, apiUrl, requestWithUrl } from 'api/API';
-import { AppContext, initialState } from 'helpers/stateManamement/context';
-import { reducer } from 'helpers/stateManamement/reducer';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { PageAbout } from './about/about';
 import { PageFormsOnHooks } from './forms/pageForms';
@@ -11,27 +8,13 @@ import { PageNotFound } from './pageNotFound/pageNotFound';
 import { MoviePage } from './search/moviePage';
 import { PageSearchOnHooks } from './search/search';
 
-const App = () => {
-  useEffect(() => {
-    const searchInput = localStorage.getItem('search_input');
-    requestWithUrl(apiSearch + '=' + searchInput).then((data) =>
-      dispatch({
-        type: 'add_items_search',
-        payload: {
-          form_item: { name: '', date: '', select: '', courier: false, imgSrc: '' },
-          search_items: data,
-          current_page: state.currentPage,
-          sort: state.sort,
-          movies_per_page: state.moviesPerPage,
-        },
-      })
-    );
-  }, []);
+import { Provider } from 'react-redux';
+import store from '../helpers/redux/store';
 
-  const [state, dispatch] = React.useReducer(reducer, initialState);
+const App = () => {
   return (
     <div>
-      <AppContext.Provider value={{ state, dispatch }}>
+      <Provider store={store}>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<PageMainOnHooks />} />
@@ -42,7 +25,7 @@ const App = () => {
             <Route path="/search/:id" element={<MoviePage />} />
           </Route>
         </Routes>
-      </AppContext.Provider>
+      </Provider>
     </div>
   );
 };

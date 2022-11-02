@@ -8,3 +8,32 @@ export interface IState {
   sort: string;
   moviesPerPage: number;
 }
+
+export type FormAction = {
+  type: string;
+  payload: {
+    formItem: IItemToRender;
+  };
+};
+
+export type SearchAction = {
+  type: string;
+  payload: {
+    searchItems: ICardResponse[];
+    currentPage: number;
+    sort: string;
+    moviesPerPage: number;
+  };
+};
+
+export type ISearchState = {
+  searchItems: ICardResponse[];
+  currentPage: number;
+  sort: string;
+  moviesPerPage: number;
+};
+
+export type AsyncThunkType = {
+  type: 'string';
+  payload: ICardResponse[];
+};

@@ -1,3 +1,4 @@
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const apiKey = `0e655211503a99e2b6a8909e76f606a6`;
@@ -45,3 +46,11 @@ export const requestWithUrl = async (url: string) => {
     console.log(error);
   }
 };
+export const fetchMovies = createAsyncThunk('searchData/searchItems', async function (url: string) {
+  try {
+    const result = (await axios.get(url)).data.results;
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+});

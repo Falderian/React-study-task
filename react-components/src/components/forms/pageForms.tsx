@@ -1,11 +1,12 @@
 import { imageStorage, saveItemToStorage, storage } from 'helpers/storage';
-import React, { ChangeEvent, FormEvent, RefObject, useContext, useState } from 'react';
+import React, { ChangeEvent, FormEvent, RefObject, useEffect, useState } from 'react';
 import { DeliveryCard } from './deliveryCard/deliveryCard';
 import { disableForm } from './disableForm/disableForm';
 import { useForm } from 'react-hook-form';
 import { formData, IItemToRender } from 'interfaces/delivery';
-import { AppContext } from 'helpers/stateManamement/context';
-import { stat } from 'fs';
+import { useDispatch, useSelector } from 'react-redux';
+import { IStore } from 'helpers/redux/store';
+import { addItemForm } from 'helpers/redux/formSlice';
 
 export class PageForms extends React.Component {
   nameInput!: RefObject<HTMLInputElement>;
@@ -159,7 +160,8 @@ export class PageForms extends React.Component {
 export const PageFormsOnHooks = () => {
   const { register, handleSubmit, reset } = useForm<formData>();
 
-  const { state, dispatch } = useContext(AppContext);
+  const formItems = useSelector<IStore>((state) => state.formsData.formItems) as IItemToRender[];
+  const dispatch = useDispatch();
 
   const [imgSrc, setImgSrc] = useState('');
 
@@ -171,19 +173,10 @@ export const PageFormsOnHooks = () => {
       courier: data.courier,
       imgSrc: imgSrc,
     };
+    dispatch(addItemForm({ formItem: temp }));
     disableSubmitBtn(true);
     disableForm(true);
     showMsgDataSaved();
-    dispatch({
-      type: 'add_item_form',
-      payload: {
-        form_item: temp,
-        search_items: [...state.searchData],
-        current_page: state.currentPage,
-        sort: state.sort,
-        movies_per_page: state.moviesPerPage,
-      },
-    });
   };
 
   const imageChangeHandler = (event: FormEvent<HTMLInputElement>) => {
@@ -295,10 +288,10 @@ export const PageFormsOnHooks = () => {
       <div id="cards" className="cards">
         <h4 className="card__heading">Список посылок: </h4>
         <div className="cards__cont" data-testid="cards">
-          {state.formData.map((el) => {
+          {formItems.map((el) => {
             return (
               <DeliveryCard
-                key={el.name + state.formData.indexOf(el)}
+                key={el.name + formItems.indexOf(el)}
                 name={el.name}
                 dateSend={el.date.toString()}
                 optionDelivery={el.select}

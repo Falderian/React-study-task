@@ -1,11 +1,13 @@
-import { requestWithUrl } from 'api/API';
+import { fetchMovies } from 'api/API';
 import { ICardResponse } from 'interfaces/searchCard';
-import React, { RefObject, useContext, useEffect, useState } from 'react';
+import React, { RefObject, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppContext } from 'helpers/stateManamement/context';
 import { SearchSelect } from './selectMoviesPerPage';
 import { Pagination } from './pagination';
 import { SearchSort } from './moviesSort';
+import { useDispatch, useSelector } from 'react-redux';
+import { IStore } from 'helpers/redux/store';
+import { AnyAction } from 'redux';
 
 export const PageSearchOnHooks = () => {
   const apiKey = `0e655211503a99e2b6a8909e76f606a6`;
@@ -14,31 +16,25 @@ export const PageSearchOnHooks = () => {
   const searchInput: RefObject<HTMLInputElement> = React.createRef();
 
   const router = useNavigate();
-  const { state, dispatch } = useContext(AppContext);
   const [loaded, setLoaded] = useState(true);
 
-  const lastMovieIndex = state.currentPage * state.moviesPerPage;
-  const firstMovieIndex = lastMovieIndex - state.moviesPerPage;
-  const currentMovies = state.searchData.slice(firstMovieIndex, lastMovieIndex);
+  const dispatch = useDispatch();
+  const state = useSelector<IStore>((state) => state) as IStore;
+  const searchItems = state.searchData.searchItems as ICardResponse[];
+  const currentPage = state.searchData.currentPage as number;
+  const moviesPerPage = state.searchData.moviesPerPage as number;
+
+  const lastMovieIndex = currentPage * moviesPerPage;
+  const firstMovieIndex = lastMovieIndex - moviesPerPage;
+  const currentMovies = searchItems.slice(firstMovieIndex, lastMovieIndex);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
     setLoaded(false);
     localStorage.setItem('search_input', searchInput.current!.value);
 
-    const movies: ICardResponse[] = await requestWithUrl(
-      apiSearch + '=' + searchInput.current!.value
-    );
-    dispatch({
-      type: 'add_items_search',
-      payload: {
-        form_item: { name: '', date: '', select: '', courier: false, imgSrc: '' },
-        search_items: movies,
-        current_page: state.currentPage,
-        sort: state.sort,
-        movies_per_page: state.moviesPerPage,
-      },
-    });
+    const url = apiSearch + '=' + searchInput.current!.value;
+    dispatch(fetchMovies(url) as unknown as AnyAction);
     setLoaded(true);
   }
 
@@ -84,7 +80,7 @@ export const PageSearchOnHooks = () => {
         </div>
       ) : (
         <div className="search__cards">
-          {Boolean(!currentMovies.length) ? (
+          {Boolean(!currentMovies) ? (
             <div className="search__not-found">Sorry, nothing was found.</div>
           ) : (
             currentMovies.map((el) => {
@@ -112,7 +108,7 @@ export const PageSearchOnHooks = () => {
           )}
         </div>
       )}
-      <Pagination totalMovies={state.searchData.length} moviesPerPage={state.moviesPerPage} />
+      <Pagination totalMovies={searchItems.length} moviesPerPage={moviesPerPage} />
     </div>
   );
 };

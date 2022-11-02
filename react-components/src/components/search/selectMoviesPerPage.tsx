@@ -1,22 +1,22 @@
-import { AppContext } from 'helpers/stateManamement/context';
-import React, { LegacyRef, useContext } from 'react';
+import { setMoviesPerPage } from 'helpers/redux/searchSlice';
+import { IStore } from 'helpers/redux/store';
+import React, { ChangeEventHandler, LegacyRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const SearchSelect = () => {
-  const { state, dispatch } = useContext(AppContext);
-
+  const dispatch = useDispatch();
+  const state = useSelector<IStore>((state) => state) as IStore;
   const selectInput: LegacyRef<HTMLSelectElement> = React.createRef();
 
-  const setMoviesPerPage = () => {
-    dispatch({
-      type: 'set_movies_per_page',
-      payload: {
-        form_item: { name: '', date: '', select: '', courier: false, imgSrc: '' },
-        search_items: [...state.searchData],
-        current_page: 1,
-        sort: state.sort,
-        movies_per_page: Number(selectInput.current!.value),
-      },
-    });
+  const handleChange = () => {
+    dispatch(
+      setMoviesPerPage({
+        searchItems: state.searchData.searchItems,
+        currentPage: state.searchData.currentPage,
+        sort: state.searchData.sort,
+        moviesPerPage: Number(selectInput.current!.value),
+      })
+    );
   };
 
   return (
@@ -25,12 +25,14 @@ export const SearchSelect = () => {
       <select
         className="search__select"
         ref={selectInput}
-        onChange={setMoviesPerPage}
-        defaultValue={state.moviesPerPage}
+        onChange={handleChange}
+        defaultValue={state.searchData.moviesPerPage}
       >
-        {state.searchData.map((el) => {
+        {state.searchData.searchItems.map((el) => {
           return (
-            <option key={state.searchData.indexOf(el)}>{state.searchData.indexOf(el) + 1}</option>
+            <option key={state.searchData.searchItems.indexOf(el)}>
+              {state.searchData.searchItems.indexOf(el) + 1}
+            </option>
           );
         })}
       </select>

@@ -1,8 +1,10 @@
 import { getMovieTrailer } from 'api/API';
 import { returnGenresString, YoutubeEmbed } from 'helpers/modalHelpers';
+import { IStore } from 'helpers/redux/store';
 import { AppContext } from 'helpers/stateManamement/context';
 import { ICardResponse } from 'interfaces/searchCard';
 import React, { useContext, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export const MoviePage = () => {
@@ -13,12 +15,12 @@ export const MoviePage = () => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const { state } = useContext(AppContext);
+  const state = useSelector<IStore>((state) => state) as IStore;
 
   useEffect(() => {
     setLoaded(false);
     const id = params.id!.toString();
-    const temp = state.searchData.find((el) => {
+    const temp = state.searchData.searchItems.find((el) => {
       return el.id === Number(params.id);
     });
     setMovie(temp);
